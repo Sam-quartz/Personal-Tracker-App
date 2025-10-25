@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Productivity Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Google Fonts for Merriweather (modern serif alternative to Salsico) -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern, simple styles with Merriweather font */
+        body {
+            font-family: 'Merriweather', serif; /* Changed to modern serif */
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #ffffff;
+            color: #212529;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700; /* Bold for headings */
+        }
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        nav {
+            background-color: #ffffff;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        nav button {
+            background-color: transparent;
+            color: #495057;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 400;
+            border-radius: 6px;
+            transition: none; /* No animations for speed */
+        }
+        nav button:hover, nav button.active {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .section {
+            display: none;
+            background-color: #ffffff;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .active {
+            display: block;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+        }
+        form {
+            margin-bottom: 1.5rem;
+        }
+        input, textarea {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            font-family: 'Merriweather', serif; /* Apply font to inputs */
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 400;
+            font-family: 'Merriweather', serif; /* Apply font to buttons */
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .task, .project, .chapter {
+            border: 1px solid #e9ecef;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            background-color: #ffffff;
+        }
+        .task h3, .project h3, .chapter h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .task p, .project p, .chapter p {
+            margin: 0.25rem 0;
+            color: #6c757d;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        .delete {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            float: right;
+            font-family: 'Merriweather', serif; /* Apply font to buttons */
+        }
+        .delete:hover {
+            background-color: #c82333;
+        }
+        .export-btn {
+            background-color: #28a745;
+            margin-top: 1rem;
+            font-family: 'Merriweather', serif; /* Apply font to buttons */
+        }
+        .export-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Personal Productivity Tracker</h1>
+        <p>Track your CS projects and write your book!</p>
+    </header>
+    <nav>
+        <button onclick="showSection('projects')" class="active">Projects</button>
+        <button onclick="showSection('tasks')">Tasks</button>
+        <button onclick="showSection('book')">Book Writing</button>
+    </nav>
+    <div class="container">
+        <div id="projects" class="section active">
+            <h2>Project Tracker</h2>
+            <form id="projectForm">
+                <input type="text" id="projectName" placeholder="Project Name" required>
+                <textarea id="projectDesc" placeholder="Project Description"></textarea>
+                <button type="submit">Add Project</button>
+            </form>
+            <div id="projectList"></div>
+        </div>
+        <div id="tasks" class="section">
+            <h2>Task Tracker</h2>
+            <form id="taskForm">
+                <input type="text" id="taskName" placeholder="Task Name" required>
+                <textarea id="taskDesc" placeholder="Task Description"></textarea>
+                <button type="submit">Add Task</button>
+            </form>
+            <div id="taskList"></div>
+        </div>
+        <div id="book" class="section">
+            <h2>Book Writing</h2>
+            <form id="chapterForm">
+                <input type="text" id="chapterTitle" placeholder="Chapter Title" required>
+                <textarea id="chapterContent" placeholder="Chapter Content" rows="10"></textarea>
+                <button type="submit">Save Chapter</button>
+            </form>
+            <button class="export-btn" onclick="exportChapters()">Export Chapters to Text File</button>
+            <div id="chapterList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load data from localStorage
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let chapters = JSON.parse(localStorage.getItem('chapters')) || [];
+
+        // Function to show sections
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            // Update nav button active state
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Render projects
+        function renderProjects() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = '';
+            projects.forEach((project, index) => {
+                const div = document.createElement('div');
+                div.className = 'project';
+                div.innerHTML = `
+                    <h3>${project.name}</h3>
+                    <p>${project.desc}</p>
+                    <button class="delete" onclick="deleteProject(${index})">Delete</button>
+                `;
+                projectList.appendChild(div);
+            });
+        }
+
+        // Render tasks
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const div = document.createElement('div');
+                div.className = `task ${task.completed ? 'completed' : ''}`;
+                div.innerHTML = `
+                    <h3 onclick="toggleTask(${index})">${task.name}</h3>
+                    <p>${task.desc}</p>
+                    <button class="delete" onclick="deleteTask(${index})">Delete</button>
+                `;
+                taskList.appendChild(div);
+            });
+        }
+
+        // Render chapters
+        function renderChapters() {
+            const chapterList = document.getElementById('chapterList');
+            chapterList.innerHTML = '';
+            chapters.forEach((chapter, index) => {
+                const div = document.createElement('div');
+                div.className = 'chapter';
+                div.innerHTML = `
+                    <h3>${chapter.title}</h3>
+                    <p>${chapter.content.substring(0, 100)}...</p>
+                    <button onclick="editChapter(${index})">Edit</button>
+                    <button class="delete" onclick="deleteChapter(${index})">Delete</button>
+                `;
+                chapterList.appendChild(div);
+            });
+        }
+
+        // Export chapters to text file
+        function exportChapters() {
+            if (chapters.length === 0) {
+                alert('No chapters to export!');
+                return;
+            }
+            let content = 'My Book\n\n';
+            chapters.forEach((chapter, index) => {
+                content += `Chapter ${index + 1}: ${chapter.title}\n\n${chapter.content}\n\n---\n\n`;
+            });
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my_book.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Add project
+        document.getElementById('projectForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('projectName').value;
+            const desc = document.getElementById('projectDesc').value;
+            projects.push({ name, desc });
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderProjects();
+            this.reset();
+        });
+
+        // Add task
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('taskName').value;
+            const desc = document.getElementById('taskDesc').value;
+            tasks.push({ name, desc, completed: false });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+            this.reset();
+        });
+
+        // Add chapter
+        document.getElementById('chapterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('chapterTitle').value;
+            const content = document.getElementById('chapterContent').value;
+            chapters.push({ title, content });
+            localStorage.setItem('chapters', JSON.stringify(chapters));
+            renderChapters();
+            this.reset();
+        });
+
+        // Toggle task completion
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        // Delete functions
+        function deleteProject(index) {
+            projects.splice(index, 1);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            renderProjects();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function deleteChapter(index) {
+            chapters.splice(index, 1);
+            localStorage.setItem('chapters', JSON.stringify(chapters));
+            renderChapters();
+        }
+
+        // Edit chapter (simple implementation)
+        function editChapter(index) {
+            const chapter = chapters[index];
+            document.getElementById('chapterTitle').value = chapter.title;
+            document.getElementById('chapterContent').value = chapter.content;
+            deleteChapter(index);
+        }
+
+        // Initial render
+        renderProjects();
+        renderTasks();
+        renderChapters();
+    </script>
+</body>
+</html>
